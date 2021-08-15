@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
+const {writeFile, copyFile}= require('./utils/generate-site.js'); 
 const generatePage = require('./src/page-template.js');
 
 
@@ -87,7 +87,7 @@ const promptProject = portfolioData => {
         },
         {
             type: 'checkbox',
-            name: 'langauges',
+            name: 'languages',
             message: 'What did you build this project with? (Check all that apply)',
             choices: ['Javascript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
         },
@@ -127,12 +127,13 @@ const promptProject = portfolioData => {
     });
 };
 
-const mockData = {
+
+const test = {
     name: 'Lernantino',
     github: 'lernantino',
     confirmAbout: true,
     about:
-      'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et.',
+      'Duis consectetur nunc nunc. Morbi finibus non sapien nec pharetra. Fusce nec dignissim orci, ac interdum ipsum. Morbi mattis justo sed commodo pellentesque. Nulla eget fringilla nulla. Integer gravida magna mi, id efficitur metus tempus et. Nam fringilla elit dapibus pellentesque cursus. Proin pretium, velit eget ultricies pulvinar, sem ex eleifend elit, nec pretium ante magna ac nibh. Nulla pulvinar turpis non magna porttitor porttitor. Morbi pellentesque sed nibh eu gravida. Fusce rhoncus, turpis non ullamcorper tristique, enim nulla vehicula ligula, nec gravida augue elit nec mauris. Donec imperdiet justo et auctor vehicula. Ut eget dapibus metus. Nulla facilisi. Integer in porttitor eros.',
     projects: [
       {
         name: 'Run Buddy',
@@ -173,25 +174,23 @@ const mockData = {
     ]
   };
 
-const pageHTML = generatePage(mockData);
 
-fs.writeFile('./index.html', pageHTML, err => {
-    if (err) throw new Error(err);
+promptUser()
+  .then(promptProject)
+  .then(portfolioData => {
+      return generatePage(portfolioData);
+  })
+  .then(pageHTML => {
+      return writeFile(pageHTML)
+  })
+  .then(writeFileResponse => {
+      console.log(writeFileResponse);
+      return copyFile();
+  })
+  .then(copyFileResponse => {
+      console.log(copyFileResponse);
+  })
+  .catch( err => {
+      console.log(err); 
+  });
 
-    console.log('Page created! Check out index.html to see the output!');
-})
-
-
-// promptUser()
-//     .then(promptProject)
-//     .then(portfolioData => {
-
-//         const pageHTML = generatePage(portfolioData); 
-
-//         // fs.writeFile('./index.html', pageHTML, err => {
-//         //     if (err) throw new Error(err);
-
-//         //     console.log('Page created! Check out index.html to see the output!'); 
-//         // })
-
-//     });
